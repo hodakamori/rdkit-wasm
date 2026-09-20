@@ -116,8 +116,23 @@ step_deps() {
   fi
 }
 
+# CMake refuses a build tree whose CMakeCache.txt was written for another
+# absolute path (a moved checkout, a renamed repository restoring an old CI
+# cache); the tree is worthless then, so drop it and configure from scratch.
+discard_relocated_build_tree() {
+  local build_dir="$1" source_dir="$2" cache="$1/CMakeCache.txt"
+  [ -f "$cache" ] || return 0
+  local cached_home
+  cached_home="$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' "$cache")"
+  if [ "$cached_home" != "$source_dir" ]; then
+    log "Discarding $build_dir: configured for '$cached_home', not '$source_dir'"
+    rm -rf "$build_dir"
+  fi
+}
+
 step_rdkit() {
   activate_emsdk
+  discard_relocated_build_tree "$RDKIT_BUILD" "$RDKIT_SRC"
   log "Configuring RDKit ($RDKIT_TAG) for Emscripten"
   # Everything the embedding path does not need is off: no Python, tests,
   # drawing, InChI, coordgen/maeparser, 3D descriptors, threads, or the
@@ -148,6 +163,7 @@ step_rdkit() {
 
 step_wrapper() {
   activate_emsdk
+  discard_relocated_build_tree "$WRAPPER_BUILD" "$ROOT"
   log "Building the embind wrapper"
   emcmake cmake -S "$ROOT" -B "$WRAPPER_BUILD" $(generator_args) \
     -DCMAKE_BUILD_TYPE=Release \

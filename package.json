@@ -1,19 +1,29 @@
 {
   "name": "megane-rdkit",
   "version": "0.1.0",
-  "private": true,
   "description": "RDKit compiled to WebAssembly for megane: ETKDG conformer embedding and MMFF/UFF minimisation today, more RDKit features as megane needs them",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "type": "module",
   "main": "index.mjs",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    },
+    "./dist/megane-rdkit.mjs": "./dist/megane-rdkit.mjs",
+    "./dist/megane-rdkit.wasm": "./dist/megane-rdkit.wasm",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
   "files": [
     "index.mjs",
     "index.d.ts",
     "dist/megane-rdkit.mjs",
     "dist/megane-rdkit.wasm",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
   ],
   "scripts": {
     "build": "bash scripts/build.sh",
@@ -24,6 +34,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hodakamori/rdkit-wasm.git"
+    "url": "https://github.com/hodakamori/megane-rdkit.git"
+  },
+  "keywords": [
+    "rdkit",
+    "wasm",
+    "webassembly",
+    "chemistry",
+    "conformer",
+    "etkdg",
+    "mmff",
+    "uff",
+    "megane"
+  ],
+  "homepage": "https://github.com/hodakamori/megane-rdkit#readme",
+  "bugs": "https://github.com/hodakamori/megane-rdkit/issues",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
