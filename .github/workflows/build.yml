@@ -62,6 +62,17 @@ jobs:
           ls -la dist
           echo "megane-rdkit.wasm gzipped bytes: $(gzip -c dist/megane-rdkit.wasm | wc -c)"
 
+      - name: Check the npm tarball contents
+        run: |
+          npm pack --dry-run --json > pack.json
+          node -e '
+            const files = require("./pack.json")[0].files.map((f) => f.path);
+            for (const f of ["index.mjs", "index.d.ts", "dist/megane-rdkit.mjs", "dist/megane-rdkit.wasm", "LICENSE", "THIRD_PARTY_LICENSES.md"]) {
+              if (!files.includes(f)) { console.error(`missing from tarball: ${f}`); process.exit(1); }
+            }
+            console.log(files.join("\n"));
+          '
+
       - uses: actions/upload-artifact@v4
         with:
           name: megane-rdkit-${{ env.RDKIT_TAG }}

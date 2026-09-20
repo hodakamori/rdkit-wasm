@@ -48,12 +48,36 @@ Outputs: `dist/megane-rdkit.mjs` (Emscripten ES-module glue) and
 (`.github/workflows/build.yml`) builds them on every pull request and push to
 `main` and uploads them as the `megane-rdkit-<RDKIT_TAG>` artifact.
 
+## Install
+
+```bash
+npm install megane-rdkit
+```
+
+The package ships the loader (`index.mjs`, `index.d.ts`) and the built module
+(`dist/megane-rdkit.mjs`, `dist/megane-rdkit.wasm`). The `.wasm` is fetched at
+runtime, so a bundler has to know where it ends up; pass that URL as
+`locateFile`. With Vite (and other bundlers that understand
+`new URL(..., import.meta.url)`):
+
+```ts
+import { loadRDKit } from "megane-rdkit";
+
+const wasmUrl = new URL("megane-rdkit/dist/megane-rdkit.wasm", import.meta.url).href;
+const rdkit = await loadRDKit({ locateFile: () => wasmUrl });
+```
+
+In Node the module finds the `.wasm` next to itself and `locateFile` is not
+needed. The calls are synchronous and `embed` takes tens to hundreds of
+milliseconds for drug-sized molecules, so in the browser load and call it
+from a Web Worker.
+
 ## API
 
 ```ts
 import { loadRDKit } from "megane-rdkit";
 
-const rdkit = await loadRDKit({ locateFile: (f) => new URL(`./dist/${f}`, import.meta.url).href });
+const rdkit = await loadRDKit({ locateFile: () => wasmUrl });
 rdkit.version(); // "2026.03.6"
 
 const { molblocks, energies, converged, forceField, warnings } = rdkit.embed(molfileFromKetcher, {
@@ -71,9 +95,6 @@ added before embedding (`addHs: true`) and kept in the output unless
 (`enforceChirality`). The result is one V2000 mol block per conformer, which
 any MOL parser (megane's included) reads directly.
 
-The calls are synchronous; `embed` takes tens to hundreds of milliseconds for
-drug-sized molecules, so run it in a Web Worker in the browser.
-
 ## Layout
 
 | Path | What it is |
@@ -90,6 +111,28 @@ minutes and needs emsdk, Boost and a C++ compiler that the rest of megane never
 touches; the artifact is a versioned binary that megane consumes as a
 dependency rather than rebuilds; and RDKit's release cadence is independent of
 megane's.
+
+## Releasing
+
+Releases are cut by pushing a version tag; `.github/workflows/publish.yml`
+builds the module from the pinned toolchain, checks the tarball, publishes
+to npm with provenance and attaches the tarball and `dist/` files to a GitHub
+release.
+
+```bash
+npm version 0.2.0 --no-git-tag-version     # bump package.json
+git commit -am "chore: release 0.2.0"
+git tag v0.2.0
+git push origin main v0.2.0
+```
+
+The tag must equal `v` + the `package.json` version or the workflow stops
+before building. Authentication is npm trusted publishing (OIDC) once it is
+configured for the package on npmjs.com; until then the workflow uses the
+`NPM_TOKEN` repository secret (a granular access token with publish rights).
+The package follows semver for the wrapper's own API; the RDKit release it
+embeds is reported by `rdkit.version()` and pinned by `RDKIT_TAG` in
+`scripts/build.sh`.
 
 ## Licensing
 
