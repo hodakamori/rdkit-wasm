@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Build RDKit's ETKDG embedding for the browser as a WebAssembly module.
 #
-#   bash rdkit-wasm/scripts/build.sh            # everything: deps, rdkit, wrapper, test
-#   bash rdkit-wasm/scripts/build.sh deps       # emsdk, Boost headers, zlib, Eigen, RDKit checkout
-#   bash rdkit-wasm/scripts/build.sh rdkit      # RDKit static libraries (the slow step)
-#   bash rdkit-wasm/scripts/build.sh wrapper    # the embind wrapper -> rdkit-wasm/dist/
-#   bash rdkit-wasm/scripts/build.sh test       # node smoke test against dist/
+#   bash scripts/build.sh            # everything: deps, rdkit, wrapper, test
+#   bash scripts/build.sh deps       # emsdk, Boost headers, zlib, Eigen, RDKit checkout
+#   bash scripts/build.sh rdkit      # RDKit static libraries (the slow step)
+#   bash scripts/build.sh wrapper    # the embind wrapper -> dist/
+#   bash scripts/build.sh test       # node smoke test against dist/
 #
-# Everything downloaded or built lands under rdkit-wasm/.deps (override with
+# Everything downloaded or built lands under .deps (override with
 # RDKIT_WASM_DEPS_DIR) so a CI cache of that directory skips the RDKit build.
 #
 # Sources are fetched with `git clone` rather than release tarballs: sandboxed

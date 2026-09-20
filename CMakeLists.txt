@@ -1,9 +1,9 @@
-# Emscripten build of megane's RDKit embedding wrapper.
+# Emscripten build of the RDKit embedding wrapper.
 #
 # Configure with emcmake against an RDKit tree that scripts/build.sh has
 # already compiled to WebAssembly static libraries:
 #
-#   emcmake cmake -S rdkit-wasm -B rdkit-wasm/build -G Ninja \
+#   emcmake cmake -S . -B build -G Ninja \
 #     -DRDKIT_SOURCE_DIR=... -DRDKIT_BUILD_DIR=... \
 #     -DBoost_DIR=... -Dboost_headers_DIR=...
 #

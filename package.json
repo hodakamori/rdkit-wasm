@@ -2,7 +2,7 @@
   "name": "@megane-labs/rdkit-embed-wasm",
   "version": "0.1.0",
   "private": true,
-  "description": "RDKit ETKDG conformer embedding and MMFF/UFF minimisation compiled to WebAssembly for megane Builder",
+  "description": "RDKit ETKDG conformer embedding and MMFF/UFF minimisation compiled to WebAssembly",
   "license": "MIT",
   "type": "module",
   "main": "index.mjs",
@@ -12,7 +12,8 @@
     "index.d.ts",
     "dist/rdkit-embed.mjs",
     "dist/rdkit-embed.wasm",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "bash scripts/build.sh",
@@ -23,7 +24,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/megane-labs/megane.git",
-    "directory": "rdkit-wasm"
+    "url": "https://github.com/hodakamori/rdkit-wasm.git"
   }
 }

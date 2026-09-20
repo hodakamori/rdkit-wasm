@@ -1,0 +1,6 @@
+# Emscripten toolchain, RDKit checkout and build tree (scripts/build.sh deps|rdkit)
+.deps/
+# Wrapper build tree and outputs (scripts/build.sh wrapper)
+build/
+dist/
+node_modules/
