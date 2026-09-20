@@ -47,7 +47,7 @@ Outputs: `dist/rdkit-embed.mjs` (Emscripten ES-module glue) and
 ## API
 
 ```ts
-import { loadRDKitEmbed } from "@megane-labs/rdkit-embed-wasm";
+import { loadRDKitEmbed } from "rdkit-wasm";
 
 const rdkit = await loadRDKitEmbed({ locateFile: (f) => new URL(`./dist/${f}`, import.meta.url).href });
 rdkit.version(); // "2026.03.6"
