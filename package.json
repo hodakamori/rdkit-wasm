@@ -25,6 +25,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hodakamori/rdkit-wasm.git"
+    "url": "https://github.com/hodakamori/megane-rdkit.git"
   }
 }
