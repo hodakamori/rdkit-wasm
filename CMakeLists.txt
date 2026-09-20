@@ -1,4 +1,4 @@
-# Emscripten build of the RDKit embedding wrapper.
+# Emscripten build of megane-rdkit, the RDKit WebAssembly wrapper.
 #
 # Configure with emcmake against an RDKit tree that scripts/build.sh has
 # already compiled to WebAssembly static libraries:
@@ -11,7 +11,7 @@
 # reviewable in one place.
 
 cmake_minimum_required(VERSION 3.20)
-project(rdkit_embed_wasm CXX)
+project(megane_rdkit CXX)
 
 if(NOT EMSCRIPTEN)
   message(FATAL_ERROR "This project must be configured with emcmake (Emscripten toolchain).")
@@ -44,24 +44,24 @@ if(n_libs EQUAL 0)
 endif()
 message(STATUS "Linking ${n_libs} RDKit static libraries from ${RDKIT_BUILD_DIR}")
 
-add_executable(rdkit-embed src/rdkit_embed.cpp)
-target_include_directories(rdkit-embed PRIVATE
+add_executable(megane-rdkit src/megane_rdkit.cpp)
+target_include_directories(megane-rdkit PRIVATE
   "${RDKIT_SOURCE_DIR}/Code"
   "${RDKIT_BUILD_DIR}/Code")
 # wasm-ld resolves archive members lazily regardless of order, but listing the
 # set twice keeps the link robust to any circular dependency between RDKit libs.
-target_link_libraries(rdkit-embed PRIVATE Boost::headers ${RDKIT_STATIC_LIBS} ${RDKIT_STATIC_LIBS})
+target_link_libraries(megane-rdkit PRIVATE Boost::headers ${RDKIT_STATIC_LIBS} ${RDKIT_STATIC_LIBS})
 
 # Exceptions must use the same ABI as the RDKit libraries (-fwasm-exceptions).
-target_compile_options(rdkit-embed PRIVATE -fwasm-exceptions -O3)
+target_compile_options(megane-rdkit PRIVATE -fwasm-exceptions -O3)
 
-set(RDKIT_EMBED_LINK_FLAGS
+set(MEGANE_RDKIT_LINK_FLAGS
   "-fwasm-exceptions"
   "-O3"
   "-lembind"
   "-sMODULARIZE=1"
   "-sEXPORT_ES6=1"
-  "-sEXPORT_NAME=createRDKitEmbedModule"
+  "-sEXPORT_NAME=createMeganeRDKitModule"
   "-sALLOW_MEMORY_GROWTH=1"
   "-sMAXIMUM_MEMORY=4GB"
   "-sSTACK_SIZE=2MB"
@@ -69,8 +69,8 @@ set(RDKIT_EMBED_LINK_FLAGS
   "-sFILESYSTEM=0"
   "-sEXPORTED_RUNTIME_METHODS=[]"
 )
-list(JOIN RDKIT_EMBED_LINK_FLAGS " " RDKIT_EMBED_LINK_FLAGS_STR)
-set_target_properties(rdkit-embed PROPERTIES
-  OUTPUT_NAME "rdkit-embed"
+list(JOIN MEGANE_RDKIT_LINK_FLAGS " " MEGANE_RDKIT_LINK_FLAGS_STR)
+set_target_properties(megane-rdkit PROPERTIES
+  OUTPUT_NAME "megane-rdkit"
   SUFFIX ".mjs"
-  LINK_FLAGS "${RDKIT_EMBED_LINK_FLAGS_STR}")
+  LINK_FLAGS "${MEGANE_RDKIT_LINK_FLAGS_STR}")

@@ -8,7 +8,7 @@
 #   bash scripts/build.sh test       # node smoke test against dist/
 #
 # Everything downloaded or built lands under .deps (override with
-# RDKIT_WASM_DEPS_DIR) so a CI cache of that directory skips the RDKit build.
+# MEGANE_RDKIT_DEPS_DIR) so a CI cache of that directory skips the RDKit build.
 #
 # Sources are fetched with `git clone` rather than release tarballs: sandboxed
 # environments often allow git over HTTPS to github.com but block the
@@ -27,7 +27,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEPS="${RDKIT_WASM_DEPS_DIR:-$ROOT/.deps}"
+DEPS="${MEGANE_RDKIT_DEPS_DIR:-$ROOT/.deps}"
 RDKIT_TAG="${RDKIT_TAG:-Release_2026_03_6}"
 BOOST_VERSION="${BOOST_VERSION:-1.87.0}"
 ZLIB_TAG="${ZLIB_TAG:-v1.3.1}"
@@ -156,7 +156,7 @@ step_wrapper() {
     -Dboost_headers_DIR="$BOOST_PREFIX/lib/cmake/boost_headers-$BOOST_VERSION"
   cmake --build "$WRAPPER_BUILD" -j"$JOBS"
   mkdir -p "$DIST"
-  cp "$WRAPPER_BUILD/rdkit-embed.mjs" "$WRAPPER_BUILD/rdkit-embed.wasm" "$DIST/"
+  cp "$WRAPPER_BUILD/megane-rdkit.mjs" "$WRAPPER_BUILD/megane-rdkit.wasm" "$DIST/"
   ls -la "$DIST"
 }
 

@@ -1,9 +1,9 @@
-// Timing harness for dist/rdkit-embed.wasm: embed + minimise a few molecules
+// Timing harness for dist/megane-rdkit.wasm: embed + minimise a few molecules
 // and print warm timings, so a build can be compared against RDKit in Python
 // (see README) or against another engine. Not a test; nothing is asserted.
-import { loadRDKitEmbed } from "../index.mjs";
+import { loadRDKit } from "../index.mjs";
 
-const rdkit = await loadRDKitEmbed();
+const rdkit = await loadRDKit();
 console.log(`RDKit ${rdkit.version()} (wasm)`);
 
 const CASES = [

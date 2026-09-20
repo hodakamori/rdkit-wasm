@@ -1,11 +1,11 @@
-// Smoke test for dist/rdkit-embed.{mjs,wasm}: loads the module, embeds a few
+// Smoke test for dist/megane-rdkit.{mjs,wasm}: loads the module, embeds a few
 // molecules from SMILES and from a flat mol block, and checks the geometry is
 // genuinely three-dimensional and the force field ran. Prints timings so a
 // build can be compared against RDKit in Python and against openchemlib-js.
 import assert from "node:assert/strict";
-import { loadRDKitEmbed } from "../index.mjs";
+import { loadRDKit } from "../index.mjs";
 
-const rdkit = await loadRDKitEmbed();
+const rdkit = await loadRDKit();
 const version = rdkit.version();
 assert.match(version, /^\d{4}\.\d{2}\.\d+/, `unexpected RDKit version string: ${version}`);
 console.log(`RDKit ${version}`);

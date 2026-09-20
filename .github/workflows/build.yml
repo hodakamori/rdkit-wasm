@@ -15,12 +15,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: rdkit-wasm-${{ github.ref }}
+  group: megane-rdkit-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    name: Build rdkit-embed.wasm
+    name: Build megane-rdkit.wasm
     runs-on: ubuntu-latest
     timeout-minutes: 150
     env:
@@ -42,7 +42,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .deps
-          key: rdkit-wasm-deps-${{ runner.os }}-${{ env.RDKIT_TAG }}-${{ env.BOOST_VERSION }}-${{ env.ZLIB_TAG }}-${{ env.EMSDK_VERSION }}-${{ hashFiles('scripts/build.sh') }}
+          key: megane-rdkit-deps-${{ runner.os }}-${{ env.RDKIT_TAG }}-${{ env.BOOST_VERSION }}-${{ env.ZLIB_TAG }}-${{ env.EMSDK_VERSION }}-${{ hashFiles('scripts/build.sh') }}
 
       - name: Fetch dependencies
         run: bash scripts/build.sh deps
@@ -59,12 +59,12 @@ jobs:
       - name: Report size
         run: |
           ls -la dist
-          echo "rdkit-embed.wasm gzipped bytes: $(gzip -c dist/rdkit-embed.wasm | wc -c)"
+          echo "megane-rdkit.wasm gzipped bytes: $(gzip -c dist/megane-rdkit.wasm | wc -c)"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: rdkit-embed-wasm-${{ env.RDKIT_TAG }}
+          name: megane-rdkit-${{ env.RDKIT_TAG }}
           path: |
-            dist/rdkit-embed.mjs
-            dist/rdkit-embed.wasm
+            dist/megane-rdkit.mjs
+            dist/megane-rdkit.wasm
           if-no-files-found: error

@@ -1,4 +1,4 @@
-/** Options for `RDKitEmbed.embed`. Every field is optional. */
+/** Options for `RDKit.embed`. Every field is optional. */
 export interface EmbedOptions {
   /** "auto" (default) sniffs a mol block by its counts line; else force one. */
   format?: "auto" | "smiles" | "molblock";
@@ -37,7 +37,7 @@ export interface EmbedResult {
   warnings: string[];
 }
 
-export interface RDKitEmbed {
+export interface RDKit {
   version(): string;
   setVerbose(verbose: boolean): void;
   /** Throws an Error when the input cannot be parsed or embedded. */
@@ -45,9 +45,9 @@ export interface RDKitEmbed {
 }
 
 export interface ModuleOptions {
-  /** Where the Emscripten glue should fetch `rdkit-embed.wasm` from. */
+  /** Where the Emscripten glue should fetch `megane-rdkit.wasm` from. */
   locateFile?: (path: string, prefix: string) => string;
   [key: string]: unknown;
 }
 
-export function loadRDKitEmbed(moduleOptions?: ModuleOptions): Promise<RDKitEmbed>;
+export function loadRDKit(moduleOptions?: ModuleOptions): Promise<RDKit>;

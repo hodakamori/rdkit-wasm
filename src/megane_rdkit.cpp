@@ -1,6 +1,7 @@
-// RDKit 3D embedding for the browser.
+// megane-rdkit: RDKit compiled to WebAssembly for the browser.
 //
-// A deliberately small Emscripten/embind surface over RDKit: parse a molecule
+// A deliberately small Emscripten/embind surface over RDKit. Today it covers
+// 3D embedding: parse a molecule
 // (SMILES or MDL mol block), add hydrogens, generate one or more ETKDG
 // conformers, relax them with MMFF94(s) or UFF, and hand the result back as
 // mol blocks. Everything crosses the JS boundary as strings (input, a JSON
@@ -10,6 +11,8 @@
 //
 // The official RDKit MinimalLib (RDKit.js) exposes only 2D coordinate
 // generation; this wrapper exists to make ETKDG available without Python.
+// New features are added as further `emscripten::function` bindings below,
+// each keeping the same string-in / JSON-out convention.
 
 #include <emscripten/bind.h>
 
@@ -337,7 +340,7 @@ struct LogInit {
 
 }  // namespace
 
-EMSCRIPTEN_BINDINGS(rdkit_embed) {
+EMSCRIPTEN_BINDINGS(megane_rdkit) {
   emscripten::function("version", &version);
   emscripten::function("setVerbose", &setVerbose);
   emscripten::function("embed", &embed);

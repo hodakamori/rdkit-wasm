@@ -1,12 +1,12 @@
 /**
- * Loader for the RDKit embedding module built by scripts/build.sh.
+ * Loader for the megane-rdkit WebAssembly module built by scripts/build.sh.
  *
  * The wasm module speaks strings (input, JSON options, JSON result); this file
  * turns that into a typed call and raises the module's error field as a real
  * Error. Run it in a Web Worker in the browser: a large molecule can take
  * hundreds of milliseconds and the call is synchronous.
  */
-import createRDKitEmbedModule from "./dist/rdkit-embed.mjs";
+import createMeganeRDKitModule from "./dist/megane-rdkit.mjs";
 
 /** Deterministic by default so the same sketch embeds to the same geometry. */
 const DEFAULT_OPTIONS = { randomSeed: 42 };
@@ -15,8 +15,8 @@ const DEFAULT_OPTIONS = { randomSeed: 42 };
  * @param {object} [moduleOptions] Emscripten module options, e.g.
  *   `{ locateFile: (path) => url }` to tell the glue where the .wasm lives.
  */
-export async function loadRDKitEmbed(moduleOptions = {}) {
-  const module = await createRDKitEmbedModule(moduleOptions);
+export async function loadRDKit(moduleOptions = {}) {
+  const module = await createMeganeRDKitModule(moduleOptions);
   return {
     /** RDKit release string, e.g. "2026.03.6". */
     version: () => module.version(),

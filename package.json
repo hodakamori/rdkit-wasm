@@ -1,8 +1,8 @@
 {
-  "name": "rdkit-wasm",
+  "name": "megane-rdkit",
   "version": "0.1.0",
   "private": true,
-  "description": "RDKit ETKDG conformer embedding and MMFF/UFF minimisation compiled to WebAssembly",
+  "description": "RDKit compiled to WebAssembly for megane: ETKDG conformer embedding and MMFF/UFF minimisation today, more RDKit features as megane needs them",
   "license": "MIT",
   "type": "module",
   "main": "index.mjs",
@@ -10,8 +10,8 @@
   "files": [
     "index.mjs",
     "index.d.ts",
-    "dist/rdkit-embed.mjs",
-    "dist/rdkit-embed.wasm",
+    "dist/megane-rdkit.mjs",
+    "dist/megane-rdkit.wasm",
     "README.md",
     "LICENSE"
   ],

@@ -1,17 +1,19 @@
-# rdkit-wasm
+# megane-rdkit
 
-RDKit's ETKDG conformer embedding and MMFF94/UFF minimisation compiled to
-WebAssembly with Emscripten. It was written for
-[megane](https://github.com/megane-labs/megane) Builder's "embed a flat sketch
-in 3D" feature and lived in that repository's `rdkit-wasm/` directory until it
-was split out here. It exists because the official RDKit.js (`@rdkit/rdkit`,
-MinimalLib) exposes only 2D coordinate generation (`set_new_coords`), and a
-pure-JS alternative (openchemlib-js) measured 10–50× slower than RDKit on the
-same molecules.
+[RDKit](https://github.com/rdkit/rdkit) compiled to WebAssembly with
+Emscripten, for [megane](https://github.com/megane-labs/megane). It is a
+thin wrapper over an unmodified RDKit release: the official RDKit.js
+(`@rdkit/rdkit`, MinimalLib) exposes only 2D coordinate generation
+(`set_new_coords`), so RDKit features megane needs in the browser that
+MinimalLib does not ship are built here instead.
 
-The wrapper is intentionally tiny (`src/rdkit_embed.cpp`, three functions)
-and RDKit itself is built unmodified from a pinned release tag, so upgrading
-RDKit is a one-line change to `RDKIT_TAG` in `scripts/build.sh`.
+Today the wrapper exposes 3D conformer embedding (ETKDG) with MMFF94/UFF
+minimisation, written for megane Builder's "embed a flat sketch in 3D"
+feature; a pure-JS alternative (openchemlib-js) measured 10–50× slower than
+RDKit on the same molecules. New features are added as further bindings in
+`src/megane_rdkit.cpp`, each following the same string-in / JSON-out
+convention, and RDKit itself is upgraded by changing `RDKIT_TAG` in
+`scripts/build.sh`.
 
 ## Build
 
@@ -31,25 +33,27 @@ The same steps are exposed as npm scripts (`npm run build`, `npm run
 build:rdkit`, `npm run build:wrapper`, `npm test`).
 
 Everything the build downloads or compiles lives in `.deps/` (override with
-`RDKIT_WASM_DEPS_DIR`), which the CI workflow caches so only the wrapper
-relinks on a normal run. Only the four RDKit targets the wrapper links
-(`DistGeomHelpers`, `ForceFieldHelpers`, `FileParsers`, `SmilesParse`) and
+`MEGANE_RDKIT_DEPS_DIR`), which the CI workflow caches so only the wrapper
+relinks on a normal run. Only the RDKit targets the wrapper links (currently
+`DistGeomHelpers`, `ForceFieldHelpers`, `FileParsers`, `SmilesParse`) and
 their dependencies are compiled; drawing, fingerprints, reactions, InChI,
 coordgen and the other externals are switched off, and RDKit's configure-time
 downloads (RingDecomposerLib, …) are disabled so the build also works behind
-egress policies that block GitHub release archives.
+egress policies that block GitHub release archives. A feature that needs
+another RDKit library adds its `*_static` target to `step_rdkit` in
+`scripts/build.sh`; `CMakeLists.txt` links every static library it finds.
 
-Outputs: `dist/rdkit-embed.mjs` (Emscripten ES-module glue) and
-`dist/rdkit-embed.wasm`. Neither is committed; the CI workflow
+Outputs: `dist/megane-rdkit.mjs` (Emscripten ES-module glue) and
+`dist/megane-rdkit.wasm`. Neither is committed; the CI workflow
 (`.github/workflows/build.yml`) builds them on every pull request and push to
-`main` and uploads them as the `rdkit-embed-wasm-<RDKIT_TAG>` artifact.
+`main` and uploads them as the `megane-rdkit-<RDKIT_TAG>` artifact.
 
 ## API
 
 ```ts
-import { loadRDKitEmbed } from "rdkit-wasm";
+import { loadRDKit } from "megane-rdkit";
 
-const rdkit = await loadRDKitEmbed({ locateFile: (f) => new URL(`./dist/${f}`, import.meta.url).href });
+const rdkit = await loadRDKit({ locateFile: (f) => new URL(`./dist/${f}`, import.meta.url).href });
 rdkit.version(); // "2026.03.6"
 
 const { molblocks, energies, converged, forceField, warnings } = rdkit.embed(molfileFromKetcher, {
@@ -67,14 +71,14 @@ added before embedding (`addHs: true`) and kept in the output unless
 (`enforceChirality`). The result is one V2000 mol block per conformer, which
 any MOL parser (megane's included) reads directly.
 
-The call is synchronous and takes tens to hundreds of milliseconds for
+The calls are synchronous; `embed` takes tens to hundreds of milliseconds for
 drug-sized molecules, so run it in a Web Worker in the browser.
 
 ## Layout
 
 | Path | What it is |
 | --- | --- |
-| `src/rdkit_embed.cpp` | The embind wrapper: parse → add Hs → ETKDG → MMFF/UFF → mol blocks |
+| `src/megane_rdkit.cpp` | The embind wrapper; one `emscripten::function` per feature (`version`, `setVerbose`, `embed`) |
 | `CMakeLists.txt` | Links the wrapper against the RDKit static libraries; Emscripten flags live here |
 | `scripts/build.sh` | Fetches the toolchain and dependencies, builds RDKit, links the wrapper, runs the smoke test |
 | `index.mjs` / `index.d.ts` | The loader and its TypeScript types |
