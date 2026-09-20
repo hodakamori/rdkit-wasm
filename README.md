@@ -93,7 +93,10 @@ megane's.
 
 ## Licensing
 
-The wrapper is MIT (see `LICENSE`). RDKit is BSD-3-Clause, Boost is BSL-1.0,
-zlib is the zlib licence and Eigen is MPL-2.0 (header only); all are
-compatible with the MIT licence of this package and of megane. Open Babel was
-ruled out for being GPL-2.
+The wrapper is BSD-3-Clause (see `LICENSE`), the same licence as RDKit, so
+the package and the RDKit code compiled into it are under one set of terms.
+`dist/megane-rdkit.wasm` statically links RDKit (BSD-3-Clause), Boost
+(BSL-1.0), zlib (zlib licence) and Eigen (MPL-2.0, header only);
+`THIRD_PARTY_LICENSES.md` carries the notices a redistribution of the binary
+must keep, RDKit's in full. All of these are compatible with megane's MIT
+licence. Open Babel was ruled out for being GPL-2.

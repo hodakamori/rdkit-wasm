@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "RDKit compiled to WebAssembly for megane: ETKDG conformer embedding and MMFF/UFF minimisation today, more RDKit features as megane needs them",
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "type": "module",
   "main": "index.mjs",
   "types": "index.d.ts",
@@ -13,7 +13,8 @@
     "dist/megane-rdkit.mjs",
     "dist/megane-rdkit.wasm",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
   ],
   "scripts": {
     "build": "bash scripts/build.sh",
