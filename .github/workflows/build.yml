@@ -3,7 +3,8 @@ name: build
 # Builds RDKit's ETKDG embedding to WebAssembly and uploads dist/ as an
 # artifact. The RDKit compile is the slow part (tens of minutes), so .deps is
 # cached on the pinned versions in scripts/build.sh; a cache hit only relinks
-# the wrapper.
+# the wrapper. The repository name is part of the key because the cached
+# CMake build trees hold the absolute checkout path.
 
 on:
   pull_request:
@@ -42,7 +43,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .deps
-          key: megane-rdkit-deps-${{ runner.os }}-${{ env.RDKIT_TAG }}-${{ env.BOOST_VERSION }}-${{ env.ZLIB_TAG }}-${{ env.EMSDK_VERSION }}-${{ hashFiles('scripts/build.sh') }}
+          key: megane-rdkit-deps-${{ github.event.repository.name }}-${{ runner.os }}-${{ env.RDKIT_TAG }}-${{ env.BOOST_VERSION }}-${{ env.ZLIB_TAG }}-${{ env.EMSDK_VERSION }}-${{ hashFiles('scripts/build.sh') }}
 
       - name: Fetch dependencies
         run: bash scripts/build.sh deps
